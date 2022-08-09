@@ -116,15 +116,29 @@ function keyDown(evn) {
 }
 
 function sendFriendMessage(id, str) {
-    return fetch("/api/sendFriendMessage/" + id + "/" + str).then(function (res) {
-        console.log(res.text());
+    return fetch('/api/sendFriendMessage', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: id,
+            str: str
+        })
     });
 }
 
 
 function sendGroupMessage(id, str) {
-    return fetch("/api/sendGroupMessage/" + id + "/" + str).then(function (res) {
-        console.log(res.text());
+    return fetch('/api/sendGroupMessage', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: id,
+            str: str
+        })
     });
 }
 

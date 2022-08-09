@@ -101,7 +101,7 @@ async function login() {
 const http = require("http");
 function handleHttp(req, res) {
     if (req.method == "GET") {
-        debug('[GET] ' + req.url);
+        console.log('[GET] ' + req.url);
         if (req.url.startsWith("/api/")) {
             //处理前端接口请求
             let api = req.url.substring(1).split("/");
@@ -130,68 +130,6 @@ function handleHttp(req, res) {
                     }
                 }
             }
-
-            if (api[1] == "sendFriendMessage") {
-                console.log("发送");
-                if (api.length >= 4) {
-                    let uid = new Number(api[2]).valueOf();
-                    let str = decodeURI(api[3]);
-                    let msg = new Message().addText(str).getMessageChain();
-                    bot.sendMessage({
-                        friend: uid,
-                        message: msg
-                    });
-                    let array = new Array();
-                    if (fmsg.has(uid)) {
-                        array = fmsg.get(uid);
-                    }
-                    let msgn = new MessageNode();
-                    msgn.sender = {
-                        id: bot.getQQ()
-                    };
-                    msgn.messageChain = msg;
-                    array.push(msgn);
-                    while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
-                        array.shift();
-                    }
-                    fmsg.set(uid, array);
-                    debug("发出消息")
-                    res.setHeader('Content-Type', 'text/plain;charset=utf-8');
-                    res.end("ok");
-                }
-            }
-
-
-            if (api[1] == "sendGroupMessage") {
-                if (api.length >= 4) {
-                    let gid = new Number(api[2]).valueOf();
-                    let str = decodeURI(api[3]);
-                    let msg = new Message().addText(str).getMessageChain();
-                    bot.sendMessage({
-                        group: gid,
-                        message: msg
-                    });
-                    let array = new Array();
-                    if (gmsg.has(gid)) {
-                        array = gmsg.get(gid);
-                    }
-                    let msgn = new MessageNode();
-                    msgn.sender = {
-                        id: bot.getQQ()
-                    };
-                    msgn.messageChain = msg;
-                    array.push(msgn);
-                    while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
-                        array.shift();
-                    }
-                    gmsg.set(gid, array);
-                    // debug(JSON.stringify(gmsg.get(gid)));
-                    debug("发出消息")
-                    res.setHeader('Content-Type', 'text/plain;charset=utf-8');
-                    res.end("ok");
-                }
-            }
-
 
             if (api[1] == "getFriendList") {
                 debug("好友列表")
@@ -273,12 +211,86 @@ function handleHttp(req, res) {
     }
     if (req.method == "POST") {
         //POST请求
-        debug("[POST] " + req.url);
+        console.log("[POST] " + req.url);
         if (req.url.startsWith("/api/")) {
             //处理前端接口请求
             let api = req.url.substring(req.url.lastIndexOf("/") + 1);
             debug("API : " + api);
+
+            // 定义了一个post变量，用于暂存请求体的信息
+            var post = '';
+            // 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
+            req.on('data', function (chunk) {
+                post += chunk;
+            });
+            // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
+            req.on('end', function () {
+                post = JSON.parse(post);
+                debug(post);
+
+
+                if (api == "sendFriendMessage") {
+                    let uid = new Number(post.id).valueOf();
+                    let str = post.str;
+                    let msg = new Message().addText(str).getMessageChain();
+                    bot.sendMessage({
+                        friend: uid,
+                        message: msg
+                    });
+                    let array = new Array();
+                    if (fmsg.has(uid)) {
+                        array = fmsg.get(uid);
+                    }
+                    let msgn = new MessageNode();
+                    msgn.sender = {
+                        id: bot.getQQ()
+                    };
+                    msgn.messageChain = msg;
+                    array.push(msgn);
+                    while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+                        array.shift();
+                    }
+                    fmsg.set(uid, array);
+                    debug("发出消息")
+                    res.setHeader('Content-Type', 'text/plain;charset=utf-8');
+                    res.end("ok");
+                }
+
+                if (api == "sendGroupMessage") {
+                    let gid = new Number(post.id).valueOf();
+                    let str = post.str;
+                    let msg = new Message().addText(str).getMessageChain();
+                    bot.sendMessage({
+                        group: gid,
+                        message: msg
+                    });
+                    let array = new Array();
+                    if (gmsg.has(gid)) {
+                        array = gmsg.get(gid);
+                    }
+                    let msgn = new MessageNode();
+                    msgn.sender = {
+                        id: bot.getQQ()
+                    };
+                    msgn.messageChain = msg;
+                    array.push(msgn);
+                    while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+                        array.shift();
+                    }
+                    gmsg.set(gid, array);
+                    // debug(JSON.stringify(gmsg.get(gid)));
+                    debug("发出消息")
+                    res.setHeader('Content-Type', 'text/plain;charset=utf-8');
+                    res.end("ok");
+                }
+            });
         }
+        setTimeout(() => {
+            if (!res.writableEnded) {
+                res.statusCode = 200;
+                res.end("bad");
+            }
+        }, 2000);
     }
 }
 
