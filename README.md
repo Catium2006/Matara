@@ -1,9 +1,11 @@
 # Matara
-`node.js`实现,运行于浏览器的轻量级浏览器QQ前端.  
+`node.js`实现,运行于浏览器的轻量级QQ前端.  
 
 底层协议为QQ机器人框架 [mirai](https://github.com/mamoe/mirai) , 语言相关API是基于 [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 实现的 [mirai-js](https://github.com/Drincann/Mirai-js)
 
 名字来源于东方Project中的秘神摩多罗
+
+这个最初是为了在学校机房上QQ摸鱼写的, 可以绕过上网策略.
 
 我们是这样工作的:
 ![](topo.png)
@@ -77,10 +79,10 @@ localServer:
 1. 在终端运行命令 `node index.js` 启动服务, 控制台将会输出运行信息(或报错)
 2. 在浏览器访问 `http://localhost:<你配置的端口>` 
 
-强烈建议**不要**部署在公网上, 本项目将**不会**验证浏览器端使用者的身份.
+强烈建议**不要**将 Matara 部署在公网上, 本项目目前**不会**验证浏览器端使用者的身份.
 
 ### UI个性化设置
-目前发行版的UI风格类似 `VScode dark theme` .
+目前发行版的UI风格类似 `VScode` .
 
 需要基本的 `html`, `css`, `js` 知识.  
 修改 `front/` 目录下对应文件即可.  
