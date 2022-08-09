@@ -11,8 +11,6 @@
 ![](topo.png)
 
 ## 许可
-
-使用 `GPL v3` 发布  
 查看 [LICENSE](LICENSE)
 
 ## 支持的操作
@@ -82,7 +80,7 @@ localServer:
 强烈建议**不要**将 Matara 部署在公网上, 本项目目前**不会**验证浏览器端使用者的身份.
 
 ### UI个性化设置
-目前发行版的UI风格类似 `VScode` .
+目前的UI风格类似 `VScode` .
 
 需要基本的 `html`, `css`, `js` 知识.  
 修改 `front/` 目录下对应文件即可.  
