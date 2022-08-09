@@ -1,0 +1,257 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="never">
+    <title>web QQ</title>
+    <style>
+        .body {
+            margin-top: 20px;
+            /* padding-top: 10px; */
+            background-color: #3a3a3a;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            /* width: 160px; */
+            float: left;
+            background-color: #282828;
+            width: 20%;
+            height: 100%;
+            color: darkgrey;
+            user-select: none;
+        }
+
+        .sidebar-left {
+            /* width: 160px; */
+            float: left;
+            background-color: #383838;
+            width: 15%;
+            min-width: 40px;
+            height: 100%;
+        }
+
+        .funcimg {
+            width: 80%;
+        }
+
+        .sidebar-right {
+            background-color: #2a2a2a;
+            width: 85%;
+            height: 100%;
+            /* overflow: scroll; */
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scrollbar-width: none;
+
+        }
+
+        /* 使滚动条不显示 */
+        .sidebar-right::-webkit-scrollbar {
+            width: 0 !important
+        }
+
+        /* 使滚动条不显示 */
+        .sidebar-right {
+            -ms-overflow-style: none;
+        }
+
+        /* 使滚动条不显示 */
+        .sidebar-right {
+            overflow: -moz-scrollbars-none;
+        }
+
+        /* 可拉动宽度 */
+        .resize-bar {
+            width: 200px;
+            height: inherit;
+            resize: horizontal;
+            cursor: ew-resize;
+            opacity: 0;
+            overflow: scroll;
+        }
+
+        /* 拖拽线 */
+
+        .resize-line {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            border-right: 2px solid #eee;
+            border-left: 1px solid #bbb;
+            pointer-events: none;
+        }
+
+        .resize-bar:hover~.resize-line,
+        .resize-bar:active~.resize-line {
+            border-left: 1px dashed skyblue;
+        }
+
+        .resize-bar::-webkit-scrollbar {
+            width: 200px;
+            height: inherit;
+        }
+
+
+
+        .sidebar-row {
+            font-size: 15px;
+            height: 50px;
+            line-height: 45px;
+            text-align: left;
+            overflow: hidden;
+            min-width: 100px;
+        }
+
+        .chatroom {
+            margin: 0 auto;
+            float: left;
+            width: 80%;
+        }
+
+        .input-buffer {
+            background-color: #1d1d1d;
+            border: solid;
+            border-width: 2px 0px 0px 0px;
+            border-color: #2d2d2d;
+            color: darkgray;
+            font-size: 15px;
+            text-align: left;
+            width: 100%;
+            height: 20%;
+            box-shadow: 1px;
+        }
+
+        .chat-content {
+            overflow-y: scroll;
+            background-color: #1d1d1d;
+            height: 80%;
+        }
+
+        /* 使滚动条不显示 */
+        .chat-content::-webkit-scrollbar {
+            width: 0 !important
+        }
+
+        /* 使滚动条不显示 */
+        .chat-content {
+            -ms-overflow-style: none;
+        }
+
+        /* 使滚动条不显示 */
+        .chat-content {
+            overflow: -moz-scrollbars-none;
+        }
+
+        .topbar {
+            /* margin-left: 10%; */
+            background-color: #2f2f2f;
+            height: 30px;
+            bottom: 0;
+            color: darkgray;
+            text-align: center;
+        }
+
+        .bottombar {
+            background-color: dodgerblue;
+            height: 20px;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        .headimg-left {
+            width: 35px;
+            border-radius: 35px;
+            /* padding: 10px; */
+            float: left;
+            margin-left: 10px;
+            /* padding-left: 20px; */
+            /* padding-right: 20px; */
+        }
+
+        .myHeadimg {
+            width: 85%;
+            border-radius: 100%;
+        }
+
+        .headimg-right {
+            width: 35px;
+            border-radius: 35px;
+            float: right;
+            margin-right: 15px;
+            /* padding: 10px; */
+            /* padding-left: 20px; */
+            /* padding-right: 20px; */
+        }
+
+        .sidebar-row-text {
+            float: left;
+            padding-left: 10px;
+            font-size: 15px;
+            overflow: hidden;
+            max-width: 70%;
+        }
+
+
+        .message-row {
+            color: darkgray;
+            padding: 5px;
+            min-height: 40px;
+            word-break: break-all;
+        }
+
+        .message-row-text {
+            border-radius: 10px;
+            background-color: #2a2a2a;
+            padding: 5px;
+            float: left;
+            margin-top: 2px;
+            margin-left: 10px;
+        }
+
+        .chatimg {
+            border-radius: 10px;
+            background-color: #2a2a2a;
+            padding: 5px;
+            max-width: 20%;
+            max-height: 150px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body class='body'>
+    <div class="sidebar">
+        <div class="sidebar-left">
+            <img id="myHeadimg" class="myHeadimg">
+        </div>
+        <div id="sidebar-right" class="sidebar-right">
+            <!-- <div class="topbar">列表</div> -->
+            <div id="friend-list-b" class="topbar">展开/收起好友列表:</div>
+            <div id="friend-list"></div>
+            <div id="group-list-b" class="topbar">展开/收起群列表:</div>
+            <div id="group-list"></div>
+        </div>
+
+    </div>
+    <div class="chatroom">
+        <div class="topbar">网络聊天室</div>
+        <div id="chat-content" class="chat-content">
+            <div>
+                <img>
+                <div>
+                    <div>消息</div>
+                    <img>
+                </div>
+            </div>
+        </div>
+        <div id="input-buffer" contenteditable="true" class="input-buffer">
+        </div>
+        <div class="bottombar"></div>
+</body>
+
+</html>
+<script src="index.html.js"></script>
