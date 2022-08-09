@@ -68,7 +68,6 @@ localServer:
   debug: false
 
 ## 缓存大小(消息条数/会话)
-## 设置为0禁用清理机制 (不建议)
 ## 建议不超过256
   cacheSize: 64
 ```
