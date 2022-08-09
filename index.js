@@ -50,7 +50,7 @@ async function login() {
     debug("登录信息 : " + JSON.stringify(profile));
 
     bot.on('GroupMessage', async data => {
-        // debug(data.sender.group.name + " : " + JSON.stringify(data.messageChain));
+        debug(data.sender.group.name + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let gid = sender.group.id;
         let array = new Array();
@@ -68,7 +68,7 @@ async function login() {
     });
 
     bot.on('FriendMessage', async data => {
-        // debug(JSON.stringify(data.messageChain));
+        debug(data.sender.remark + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let uid = sender.id;
         let array = new Array();

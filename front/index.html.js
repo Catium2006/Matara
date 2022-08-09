@@ -39,6 +39,7 @@ function addMessage(msg, qq) {
     let row = document.createElement("div");
     let headimg = createElementWithClass("img", "headimg-left");
     headimg.src = getHeadimgSrc(qq, 100);
+    // console.log(headimg);
     row.appendChild(headimg);
 
     let div = createElementWithClass("div", "message-row");
@@ -168,7 +169,7 @@ function switchFriend(id) {
                 let remark = list[i].sender.remark;
                 let uid = list[i].sender.id;
                 let messageChain = list[i].messageChain;
-                addMessage(messageChain, id);
+                addMessage(messageChain, uid);
             }
         }
     });
