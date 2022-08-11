@@ -57,19 +57,24 @@ function addMessage(msg, qq) {
         if (msg[i].type == "Image") {
             let img = createElementWithClass("img", "chatimg");
             img.src = msg[i].url;
-            // text.appendChild(img);
             div.appendChild(img);
         }
+        if (msg[i].type == "File") {
+            let text = createElementWithClass("div", "message-row-text");
+            text.innerHTML = "*上传了一个 [文件] : " + msg[i].name;
+            div.appendChild(text);
+        }
+        if (msg[i].type == "Face") {
+            let text = createElementWithClass("div", "message-row-text");
+            text.innerHTML = "/" + msg[i].name;
+            div.appendChild(text);
+        }
         if (msg[i].type == "Quote") {
-            // msg[i].
-            let origintext = ' 回复: "' + msg[i].origin[0].text + '" ';
+            let origintext = ' *回复 => "' + msg[i].origin[0].text + '" ';
             let text = createElementWithClass("div", "message-row-text");
             let quote = createElementWithClass("div", "quote");
             quote.innerHTML = origintext;
             text.appendChild(quote);
-            // let node = document.createTextNode(msg[i].text);
-            // node.textContent = msg[i].text;
-            // text.appendChild(node);
             div.appendChild(text);
         }
     }
@@ -180,12 +185,20 @@ function getGroupMessageListNew(gid) {
     });
 }
 
+var friendList;
+var groupList;
+
 function switchFriend(id) {
     isfriend = true;
     isgroup = false;
     curfriend = id;
     curgroup = 0;
     clearChatroom();
+    for (let i = 0; i < friendList.length; i++) {
+        if (friendList[i].id == id) {
+            document.getElementById("title").innerHTML = friendList[i].remark;
+        }
+    }
     getFriendMessageList(id).then(function (data) {
         // console.log(data);
         if (data != "bad") {
@@ -206,6 +219,11 @@ function switchGroup(id) {
     curfriend = 0;
     curgroup = id;
     clearChatroom();
+    for (let i = 0; i < groupList.length; i++) {
+        if (groupList[i].id == id) {
+            document.getElementById("title").innerHTML = groupList[i].name;
+        }
+    }
     getGroupMessageList(id).then(function (data) {
         if (data != "bad") {
             let list = JSON.parse(data);
@@ -273,13 +291,14 @@ function app() {
         res.text().then(function (data) {
             // console.log(data);
             let array = JSON.parse(data);
-            let friendList = document.getElementById("friend-list");
+            friendList = array;
+            let friendListDiv = document.getElementById("friend-list");
             let friendListB = document.getElementById("friend-list-b");
             friendListB.onclick = function (e) {
-                if (friendList.style.display == "none") {
-                    friendList.style.display = "block";
+                if (friendListDiv.style.display == "none") {
+                    friendListDiv.style.display = "block";
                 } else {
-                    friendList.style.display = "none";
+                    friendListDiv.style.display = "none";
                 }
             }
             for (let i = 0; i < array.length; i++) {
@@ -308,7 +327,7 @@ function app() {
                         div.scrollTop = div.scrollHeight;
                     }, 300);
                 }
-                friendList.appendChild(row);
+                friendListDiv.appendChild(row);
             }
         });
     });
@@ -317,13 +336,14 @@ function app() {
         res.text().then(function (data) {
             // console.log(data);
             let array = JSON.parse(data).data;
-            let groupList = document.getElementById("group-list");
+            groupList = array;
+            let groupListDiv = document.getElementById("group-list");
             let groupListB = document.getElementById("group-list-b");
             groupListB.onclick = function (e) {
-                if (groupList.style.display == "none") {
-                    groupList.style.display = "block";
+                if (groupListDiv.style.display == "none") {
+                    groupListDiv.style.display = "block";
                 } else {
-                    groupList.style.display = "none";
+                    groupListDiv.style.display = "none";
                 }
             }
             // console.log(array);
@@ -349,7 +369,7 @@ function app() {
                         div.scrollTop = div.scrollHeight;
                     }, 300);
                 }
-                groupList.appendChild(row);
+                groupListDiv.appendChild(row);
             }
         });
     });
