@@ -1,4 +1,5 @@
 # Matara
+
 `node.js`实现,运行于浏览器的轻量级QQ前端.  
 
 底层协议为QQ机器人框架 [mirai](https://github.com/mamoe/mirai) , 语言相关API是基于 [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 实现的 [mirai-js](https://github.com/Drincann/Mirai-js)
@@ -6,6 +7,8 @@
 名字来源于东方Project中的秘神摩多罗
 
 这个最初是为了在学校机房上QQ摸鱼写的, 可以绕过上网策略.
+
+也可以拿来管理 `Bot`
 
 我们是这样工作的:
 ![](topo.png)

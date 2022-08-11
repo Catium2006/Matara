@@ -166,7 +166,18 @@ function getGroupMessageList(gid) {
     return fetch("/api/getGroupMessageList/" + gid).then(function (res) {
         return res.text();
     });
+}
 
+function getFriendMessageListNew(qq) {
+    return fetch("/api/getFriendMessageListNew/" + qq).then(function (res) {
+        return res.text();
+    });
+}
+
+function getGroupMessageListNew(gid) {
+    return fetch("/api/getGroupMessageListNew/" + gid).then(function (res) {
+        return res.text();
+    });
 }
 
 function switchFriend(id) {
@@ -199,7 +210,6 @@ function switchGroup(id) {
         if (data != "bad") {
             let list = JSON.parse(data);
             for (let i = 0; i < list.length; i++) {
-                let remark = list[i].sender.remark;
                 let uid = list[i].sender.id;
                 let messageChain = list[i].messageChain;
                 addMessage(messageChain, uid);
@@ -210,11 +220,42 @@ function switchGroup(id) {
 }
 
 function refresh() {
-    if (isgroup) {
-        switchGroup(curgroup);
-    }
+    let div = document.getElementById("chat-content");
+    let f = (div.scrollTop >= div.scrollHeight - 1000);
+    // console.log(div.scrollTop);
+    // console.log(div.scrollHeight);
     if (isfriend) {
-        switchFriend(curfriend);
+        getFriendMessageListNew(curfriend).then(function (data) {
+            // console.log(data);
+            if (data != "bad") {
+                let list = JSON.parse(data);
+                for (let i = 0; i < list.length; i++) {
+                    let uid = list[i].sender.id;
+                    let messageChain = list[i].messageChain;
+                    addMessage(messageChain, uid);
+                }
+            }
+        });
+    }
+    if (isgroup) {
+        getGroupMessageListNew(curgroup).then(function (data) {
+            if (data != "bad") {
+                let list = JSON.parse(data);
+                // console.log(list);
+                for (let i = 0; i < list.length; i++) {
+                    let uid = list[i].sender.id;
+                    let messageChain = list[i].messageChain;
+                    addMessage(messageChain, uid);
+                }
+            }
+        });
+    }
+    if (f) {
+        window.setTimeout(
+            function () {
+                div.scrollTop = div.scrollHeight;
+            }, 300
+        );
     }
 }
 
@@ -312,6 +353,8 @@ function app() {
             }
         });
     });
+
+    window.setInterval(refresh, 1333);
 
 }
 

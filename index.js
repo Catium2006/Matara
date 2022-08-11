@@ -25,6 +25,9 @@ function debug(str) {
 //存储消息记录的数据结构
 var fmsg = new Map();
 var gmsg = new Map();
+//存储消息增量的数据结构
+var fmsgn = new Map();
+var gmsgn = new Map();
 
 class MessageNode {
     sender;
@@ -53,37 +56,60 @@ async function login() {
         debug(data.sender.group.name + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let gid = sender.group.id;
+
+
+        let msgn = new MessageNode();
+        msgn.sender = sender;
+        msgn.messageChain = data.messageChain;
+
         let array = new Array();
         if (gmsg.has(gid)) {
             array = gmsg.get(gid);
         }
-        let msgn = new MessageNode();
-        msgn.sender = sender;
-        msgn.messageChain = data.messageChain;
         array.push(msgn);
         while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
             array.shift();
         }
         gmsg.set(gid, array);
+
+        array = new Array();
+        if (gmsgn.has(gid)) {
+            array = gmsgn.get(gid);
+        }
+        array.push(msgn);
+        while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+            array.shift();
+        }
+        gmsgn.set(gid, array);
     });
 
     bot.on('FriendMessage', async data => {
         debug(data.sender.remark + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let uid = sender.id;
+        let msgn = new MessageNode();
+        msgn.sender = sender;
+        msgn.messageChain = data.messageChain;
+
         let array = new Array();
         if (fmsg.has(uid)) {
             array = fmsg.get(uid);
         }
-        let msgn = new MessageNode();
-        msgn.sender = sender;
-        msgn.messageChain = data.messageChain;
         array.push(msgn);
         while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
             array.shift();
         }
-        // debug(typeof (uid) + " " + uid);
         fmsg.set(uid, array);
+
+        array = new Array();
+        if (fmsgn.has(uid)) {
+            array = fmsgn.get(uid);
+        }
+        array.push(msgn);
+        while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+            array.shift();
+        }
+        fmsgn.set(uid, array);
     });
 
     bot.getFriendList().then(function (data) {
@@ -149,7 +175,7 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getFriendMessageList") {
-                debug("发送好友消息列表");
+                debug("好友消息列表");
                 if (api.length >= 3) {
                     let id = Number(api[2]);
                     if (fmsg.has(id)) {
@@ -161,13 +187,43 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getGroupMessageList") {
-                debug("发送群消息列表");
+                debug("群消息列表");
                 if (api.length >= 3) {
                     let id = Number(api[2]);
                     if (gmsg.has(id)) {
                         let array = gmsg.get(id);
                         res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                         res.end(JSON.stringify(array));
+                    }
+                }
+            }
+
+            if (api[1] == "getFriendMessageListNew") {
+                debug("好友消息增量列表");
+                if (api.length >= 3) {
+                    let id = Number(api[2]);
+                    if (fmsgn.has(id)) {
+                        let array = fmsgn.get(id);
+                        res.setHeader('Content-Type', 'text/plain;charset=utf-8');
+                        res.end(JSON.stringify(array));
+                        while (fmsgn.get(id).length > 0) {
+                            fmsgn.get(id).shift();
+                        }
+                    }
+                }
+            }
+
+            if (api[1] == "getGroupMessageListNew") {
+                debug("群消息增量列表");
+                if (api.length >= 3) {
+                    let id = Number(api[2]);
+                    if (gmsgn.has(id)) {
+                        let array = gmsgn.get(id);
+                        res.setHeader('Content-Type', 'text/plain;charset=utf-8');
+                        res.end(JSON.stringify(array));
+                        while (gmsgn.get(id).length > 0) {
+                            gmsgn.get(id).shift();
+                        }
                     }
                 }
             }
@@ -251,7 +307,19 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     fmsg.set(uid, array);
-                    debug("发出消息")
+                    // debug("发出消息")
+
+                    array = new Array();
+                    if (fmsgn.has(uid)) {
+                        array = fmsgn.get(uid);
+                    }
+                    array.push(msgn);
+                    while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+                        array.shift();
+                    }
+                    fmsgn.set(uid, array);
+
+                    console.log("好友 => " + uid + " : " + str);
                     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                     res.end("ok");
                 }
@@ -278,8 +346,20 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     gmsg.set(gid, array);
+
+                    array = new Array();
+                    if (gmsgn.has(gid)) {
+                        array = gmsgn.get(gid);
+                    }
+                    array.push(msgn);
+                    while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+                        array.shift();
+                    }
+                    gmsgn.set(gid, array);
+
                     // debug(JSON.stringify(gmsg.get(gid)));
-                    debug("发出消息")
+                    // debug("发出群消息")
+                    console.log("qun => " + gid + " : " + str);
                     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                     res.end("ok");
                 }
