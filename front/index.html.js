@@ -60,6 +60,18 @@ function addMessage(msg, qq) {
             // text.appendChild(img);
             div.appendChild(img);
         }
+        if (msg[i].type == "Quote") {
+            // msg[i].
+            let origintext = ' 回复: "' + msg[i].origin[0].text + '" ';
+            let text = createElementWithClass("div", "message-row-text");
+            let quote = createElementWithClass("div", "quote");
+            quote.innerHTML = origintext;
+            text.appendChild(quote);
+            // let node = document.createTextNode(msg[i].text);
+            // node.textContent = msg[i].text;
+            // text.appendChild(node);
+            div.appendChild(text);
+        }
     }
     row.appendChild(div);
     let content = document.getElementById("chat-content");
@@ -108,6 +120,7 @@ function keyDown(evn) {
             if (isgroup) {
                 sendGroupMessage(curgroup, str);
             }
+            refresh();
         }
     } else if (isCtrl == 1 && isEnter == 0) {
         console.log("Ctrl");
@@ -153,6 +166,7 @@ function getGroupMessageList(gid) {
     return fetch("/api/getGroupMessageList/" + gid).then(function (res) {
         return res.text();
     });
+
 }
 
 function switchFriend(id) {

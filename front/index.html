@@ -20,6 +20,7 @@
             height: 100%;
             color: darkgrey;
             user-select: none;
+            /* min-width: 140px; */
         }
 
         .sidebar-left {
@@ -43,6 +44,7 @@
             overflow-y: scroll;
             overflow-x: hidden;
             scrollbar-width: none;
+            min-width: 100px;
 
         }
 
@@ -61,39 +63,6 @@
             overflow: -moz-scrollbars-none;
         }
 
-        /* 可拉动宽度 */
-        .resize-bar {
-            width: 200px;
-            height: inherit;
-            resize: horizontal;
-            cursor: ew-resize;
-            opacity: 0;
-            overflow: scroll;
-        }
-
-        /* 拖拽线 */
-
-        .resize-line {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            border-right: 2px solid #eee;
-            border-left: 1px solid #bbb;
-            pointer-events: none;
-        }
-
-        .resize-bar:hover~.resize-line,
-        .resize-bar:active~.resize-line {
-            border-left: 1px dashed skyblue;
-        }
-
-        .resize-bar::-webkit-scrollbar {
-            width: 200px;
-            height: inherit;
-        }
-
-
 
         .sidebar-row {
             font-size: 15px;
@@ -101,7 +70,6 @@
             line-height: 45px;
             text-align: left;
             overflow: hidden;
-            min-width: 100px;
         }
 
         .chatroom {
@@ -219,6 +187,10 @@
             max-width: 20%;
             max-height: 150px;
             margin-left: 10px;
+        }
+
+        .quote{
+            background-color: #282828;
         }
     </style>
 </head>
