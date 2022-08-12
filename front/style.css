@@ -1,0 +1,213 @@
+.body {
+    margin-top: 20px;
+    /* padding-top: 10px; */
+    background-color: #3a3a3a;
+    overflow: hidden;
+}
+
+.sidebar {
+    /* width: 160px; */
+    float: left;
+    background-color: #282828;
+    width: 20%;
+    height: 100%;
+    color: darkgrey;
+    user-select: none;
+    /* min-width: 140px; */
+}
+
+.sidebar-left {
+    /* width: 160px; */
+    float: left;
+    background-color: #383838;
+    width: 15%;
+    min-width: 40px;
+    height: 100%;
+}
+
+.funcimg {
+    width: 80%;
+}
+
+.sidebar-right {
+    background-color: #2a2a2a;
+    width: 85%;
+    height: 100%;
+    /* overflow: scroll; */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    min-width: 100px;
+
+}
+
+/* 使滚动条不显示 */
+.sidebar-right::-webkit-scrollbar {
+    width: 0 !important
+}
+
+/* 使滚动条不显示 */
+.sidebar-right {
+    -ms-overflow-style: none;
+}
+
+/* 使滚动条不显示 */
+.sidebar-right {
+    overflow: -moz-scrollbars-none;
+}
+
+
+.sidebar-row {
+    font-size: 15px;
+    height: 50px;
+    line-height: 45px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.chatroom {
+    margin: 0 auto;
+    float: left;
+    width: 80%;
+}
+
+.input-buffer {
+    background-color: #1d1d1d;
+    border: solid;
+    border-width: 2px 0px 0px 0px;
+    border-color: #2d2d2d;
+    color: darkgray;
+    font-size: 15px;
+    text-align: left;
+    width: 100%;
+    height: 20%;
+    box-shadow: 1px;
+}
+
+.chat-content {
+    overflow-y: scroll;
+    background-color: #1d1d1d;
+    height: 80%;
+}
+
+/* 使滚动条不显示 */
+.chat-content::-webkit-scrollbar {
+    width: 0 !important
+}
+
+/* 使滚动条不显示 */
+.chat-content {
+    -ms-overflow-style: none;
+}
+
+/* 使滚动条不显示 */
+.chat-content {
+    overflow: -moz-scrollbars-none;
+}
+
+.topbar {
+    /* margin-left: 10%; */
+    background-color: #2f2f2f;
+    height: 30px;
+    bottom: 0;
+    color: darkgray;
+    text-align: center;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.bottombar {
+    background-color: dodgerblue;
+    height: 20px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.headimg-left {
+    width: 35px;
+    border-radius: 35px;
+    /* padding: 10px; */
+    float: left;
+    margin-left: 10px;
+    /* padding-left: 20px; */
+    /* padding-right: 20px; */
+}
+
+.myHeadimg {
+    width: 85%;
+    border-radius: 100%;
+}
+
+.headimg-right {
+    width: 35px;
+    border-radius: 35px;
+    float: right;
+    margin-right: 15px;
+    /* padding: 10px; */
+    /* padding-left: 20px; */
+    /* padding-right: 20px; */
+}
+
+.sidebar-row-text {
+    float: left;
+    padding-left: 10px;
+    font-size: 15px;
+    overflow: hidden;
+    max-width: 70%;
+}
+
+
+.message-row {
+    color: darkgray;
+    padding: 5px;
+    min-height: 40px;
+    word-break: break-all;
+    margin-left: 50px;
+}
+
+.message-row-text {
+    border-radius: 10px;
+    background-color: #2a2a2a;
+    padding: 5px;
+    float: left;
+    margin-top: 2px;
+    margin-left: 10px;
+}
+
+.chatimg {
+    border-radius: 10px;
+    background-color: #2a2a2a;
+    padding: 5px;
+    max-width: 20%;
+    max-height: 150px;
+    margin-left: 10px;
+}
+
+.quote {
+    background-color: #282828;
+}
+
+.status-div {
+    background-color: #383838;
+    width: 30%;
+    height: 40%;
+    margin-left: -200px;
+    margin-top: -160px;
+    color: darkgray;
+    display: none;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 5px black;
+    /* user-select: none; */
+}
+
+.status-row {
+    font-size: 20px;
+    margin-left: 20px;
+    margin-top: 10px;
+}
