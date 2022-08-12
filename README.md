@@ -75,8 +75,9 @@ localServer:
   debug: false
 
 ## 缓存大小(消息条数/会话)
-## 建议不超过256
-  cacheSize: 64
+## 太大的缓存可能导致页面卡顿和nodejs内存占用高
+## 建议不超过512
+  cacheSize: 256
 ```
 
 ### 使用
