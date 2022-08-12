@@ -48,20 +48,15 @@ async function login() {
         // 要绑定的 qq，须确保该用户已在 mirai-console 登录
         qq: setting.qq,
     });
-
     const profile = await bot.getUserProfile({ qq: bot.getQQ() });
     debug("登录信息 : " + JSON.stringify(profile));
-
     bot.on('GroupMessage', async data => {
         debug(data.sender.group.name + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let gid = sender.group.id;
-
-
         let msgn = new MessageNode();
         msgn.sender = sender;
         msgn.messageChain = data.messageChain;
-
         let array = new Array();
         if (gmsg.has(gid)) {
             array = gmsg.get(gid);
@@ -82,7 +77,6 @@ async function login() {
         }
         gmsgn.set(gid, array);
     });
-
     bot.on('FriendMessage', async data => {
         debug(data.sender.remark + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
@@ -111,28 +105,24 @@ async function login() {
         }
         fmsgn.set(uid, array);
     });
-
     bot.getFriendList().then(function (data) {
         flist = data;
     });
     bot.getGroupList().then(function (data) {
         glist = data;
     });
-
-
     console.log("登录完了")
 }
-
 
 const http = require("http");
 function handleHttp(req, res) {
     if (req.method == "GET") {
-        console.log('[GET] ' + req.url);
+        debug('[GET] ' + req.url);
         if (req.url.startsWith("/api/")) {
             //处理前端接口请求
             let api = req.url.substring(1).split("/");
             debug("API : " + api);
-
+            
             if (api[1] == "getUserProfile") {
                 if (api.length >= 3) {
                     let id = api[2];
@@ -158,13 +148,13 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getFriendList") {
-                debug("好友列表")
+                // debug("好友列表")
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end(JSON.stringify(flist));
             }
 
             if (api[1] == "getGroupList") {
-                debug("群列表");
+                // debug("群列表");
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end(JSON.stringify(glist));
             }
@@ -175,7 +165,7 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getFriendMessageList") {
-                debug("好友消息列表");
+                // debug("好友消息列表");
                 if (api.length >= 3) {
                     let id = Number(api[2]);
                     if (fmsg.has(id)) {
@@ -187,7 +177,7 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getGroupMessageList") {
-                debug("群消息列表");
+                // debug("群消息列表");
                 if (api.length >= 3) {
                     let id = Number(api[2]);
                     if (gmsg.has(id)) {
@@ -199,7 +189,7 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getFriendMessageListNew") {
-                debug("好友消息增量列表");
+                // debug("好友消息增量列表");
                 if (api.length >= 3) {
                     let id = Number(api[2]);
                     if (fmsgn.has(id)) {
@@ -214,7 +204,7 @@ function handleHttp(req, res) {
             }
 
             if (api[1] == "getGroupMessageListNew") {
-                debug("群消息增量列表");
+                // debug("群消息增量列表");
                 if (api.length >= 3) {
                     let id = Number(api[2]);
                     if (gmsgn.has(id)) {
@@ -273,18 +263,15 @@ function handleHttp(req, res) {
             let api = req.url.substring(req.url.lastIndexOf("/") + 1);
             debug("API : " + api);
 
-            // 定义了一个post变量，用于暂存请求体的信息
             var post = '';
-            // 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
+            // 接受data
             req.on('data', function (chunk) {
                 post += chunk;
             });
-            // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
+            // 数据传输结束后
             req.on('end', function () {
+                debug("POST data :"+post);
                 post = JSON.parse(post);
-                debug(post);
-
-
                 if (api == "sendFriendMessage") {
                     let uid = new Number(post.id).valueOf();
                     let str = post.str;
@@ -307,8 +294,6 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     fmsg.set(uid, array);
-                    // debug("发出消息")
-
                     array = new Array();
                     if (fmsgn.has(uid)) {
                         array = fmsgn.get(uid);
@@ -318,7 +303,6 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     fmsgn.set(uid, array);
-
                     console.log("好友 => " + uid + " : " + str);
                     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                     res.end("ok");
@@ -346,7 +330,6 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     gmsg.set(gid, array);
-
                     array = new Array();
                     if (gmsgn.has(gid)) {
                         array = gmsgn.get(gid);
@@ -356,10 +339,7 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     gmsgn.set(gid, array);
-
-                    // debug(JSON.stringify(gmsg.get(gid)));
-                    // debug("发出群消息")
-                    console.log("qun => " + gid + " : " + str);
+                    console.log("群 => " + gid + " : " + str);
                     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                     res.end("ok");
                 }
@@ -387,7 +367,7 @@ async function app() {
     debug("启动 HTTP");
     startHttpServer();
 
-    debug("登录 QQ : " + setting.qq);
+    console.log("登录 QQ : " + setting.qq);
     login();
 
 }
