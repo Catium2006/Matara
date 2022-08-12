@@ -2,8 +2,9 @@
 
 <head>
     <meta charset="utf-8">
+    <!-- 显示QQ图片需要加入这个元数据 -->
     <meta name="referrer" content="never">
-    <title>web QQ</title>
+    <title>Matara</title>
     <style>
         .body {
             margin-top: 20px;
@@ -195,13 +196,51 @@
         .quote {
             background-color: #282828;
         }
+
+        .status-div {
+            background-color: #383838;
+            width: 30%;
+            height: 40%;
+            margin-left: -200px;
+            margin-top: -160px;
+            color: darkgray;
+            display: none;
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 5px black;
+            /* user-select: none; */
+        }
+
+        .status-row {
+            font-size: 20px;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
 <body class='body'>
+    <div class="status-div" id="status-div">
+        <div class="topbar">
+            <div style="padding-top: 5px;">
+                Status
+            </div>
+            <button
+                style="float: right; margin-top: -25px; background-color: #282828;  width:60px; height: 30px; color:darkgray;font-size: 20px; border-radius: 5px;"
+                onclick="closeStatus()">
+                关闭
+            </button>
+        </div>
+        <div id="status-content">
+
+        </div>
+    </div>
     <div class="sidebar">
         <div class="sidebar-left">
-            <img id="myHeadimg" class="myHeadimg">
+            <img id="myHeadimg" class="myHeadimg" onclick="showStatus()">
         </div>
         <div id="sidebar-right" class="sidebar-right">
             <!-- <div class="topbar">列表</div> -->
@@ -210,6 +249,7 @@
             <div id="group-list-b" class="topbar">展开/收起群列表:</div>
             <div id="group-list"></div>
         </div>
+
 
     </div>
     <div class="chatroom">

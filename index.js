@@ -122,7 +122,7 @@ function handleHttp(req, res) {
             //处理前端接口请求
             let api = req.url.substring(1).split("/");
             debug("API : " + api);
-            
+
             if (api[1] == "getUserProfile") {
                 if (api.length >= 3) {
                     let id = api[2];
@@ -218,6 +218,17 @@ function handleHttp(req, res) {
                 }
             }
 
+            if (api[1] == "status") {
+                let status = {
+                    memory: process.memoryUsage(),
+                    arch: process.arch,
+                    platform: process.platform
+                }
+                let str = JSON.stringify(status);
+                res.setHeader('Content-Type', 'text/plain;charset=utf-8');
+                res.end(str);
+            }
+
             setTimeout(() => {
                 if (!res.writableEnded) {
                     res.statusCode = 200;
@@ -255,6 +266,7 @@ function handleHttp(req, res) {
             })
         }
     }
+
     if (req.method == "POST") {
         //POST请求
         console.log("[POST] " + req.url);
@@ -270,7 +282,7 @@ function handleHttp(req, res) {
             });
             // 数据传输结束后
             req.on('end', function () {
-                debug("POST data :"+post);
+                debug("POST data :" + post);
                 post = JSON.parse(post);
                 if (api == "sendFriendMessage") {
                     let uid = new Number(post.id).valueOf();

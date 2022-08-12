@@ -9,6 +9,14 @@ function createElementWithClass(type, classname) {
     return e;
 }
 
+function closeStatus() {
+    document.getElementById("status-div").style.display = "none";
+}
+
+function showStatus() {
+    document.getElementById("status-div").style.display = "block";
+}
+
 function getHeadimgSrc(qq, width) {
     let src = "http://q.qlogo.cn/g?b=qq&nk=" + qq + "&s=" + width;
     return src;
@@ -125,7 +133,7 @@ function keyDown(evn) {
             if (isgroup) {
                 sendGroupMessage(curgroup, str);
             }
-            refresh();
+            update();
         }
     } else if (isCtrl == 1 && isEnter == 0) {
         console.log("Ctrl");
@@ -146,7 +154,6 @@ function sendFriendMessage(id, str) {
         })
     });
 }
-
 
 function sendGroupMessage(id, str) {
     return fetch('/api/sendGroupMessage', {
@@ -237,11 +244,16 @@ function switchGroup(id) {
 
 }
 
-function refresh() {
+function getStatus() {
+    return fetch("/api/status").then(function (res) {
+        return res.text();
+    });
+}
+
+function update() {
+    //先更新消息
     let div = document.getElementById("chat-content");
     let f = (div.scrollTop >= div.scrollHeight - 1000);
-    // console.log(div.scrollTop);
-    // console.log(div.scrollHeight);
     if (isfriend) {
         getFriendMessageListNew(curfriend).then(function (data) {
             // console.log(data);
@@ -275,6 +287,18 @@ function refresh() {
             }, 300
         );
     }
+    //然后更新Status
+    getStatus().then(function (data) {
+        data = JSON.parse(data);
+        div = document.getElementById("status-content");
+        div.replaceChildren();
+        let meminfo = createElementWithClass("div", "status-row");
+        meminfo.innerText = "堆内存使用: " + ((data.memory.heapUsed / 1024 / 1024).toFixed(1)) + " / " + ((data.memory.heapTotal / 1024 / 1024).toFixed(1)) + "MB";
+        div.appendChild(meminfo);
+        let platform = createElementWithClass("div", "status-row");
+        platform.innerText = "平台: " + data.platform + " " + data.arch;
+        div.appendChild(platform);
+    });
 }
 
 function app() {
@@ -374,7 +398,7 @@ function app() {
         });
     });
 
-    window.setInterval(refresh, 1333);
+    window.setInterval(update, 1333);
 
 }
 
