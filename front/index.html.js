@@ -110,6 +110,11 @@ var curgroup;
 function keyDown(evn) {
     let code = evn.keyCode || evn.which || evn.charCode;
     let input = document.getElementById("input-buffer");
+    if (input.innerText != "") {
+        document.getElementById("input-hint").style.display = "none";
+    } else {
+        document.getElementById("input-hint").style.display = "block";
+    }
     if (code == 13) {
         isEnter = 1;
     } else if (code == 17) {
@@ -124,15 +129,9 @@ function keyDown(evn) {
         isEnter = 0;
         //然后这时候是发送
         if (input.innerHTML != "") {
-            let str = input.innerHTML;
-            while (str.search("<div>") != -1) {
-                str = str.replace("<div>", "\r\n");
-            }
-            while (str.search("<br>") != -1) {
-                str = str.replace("<br>", "\r\n");
-            }
-            while (str.search("</div>") != -1) {
-                str = str.replace("</div>", "");
+            let str = input.innerText;
+            while (str.search("\\\\") != -1) {
+                str = str.replace("\\\\", "\r\n");
             }
             console.log(str);
             // addMyMessage([{ type: "Plain", text: str }]);
