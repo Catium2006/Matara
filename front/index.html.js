@@ -49,9 +49,7 @@ function addMessage(msg, qq) {
     headimg.src = getHeadimgSrc(qq, 100);
     // console.log(headimg);
     row.appendChild(headimg);
-
     let div = createElementWithClass("div", "message-row");
-
     for (let i = 0; i < msg.length; i++) {
         if (msg[i].type == "Plain") {
             let t = msg[i].text;
@@ -85,6 +83,18 @@ function addMessage(msg, qq) {
             text.appendChild(quote);
             div.appendChild(text);
         }
+        if (msg[i].type == "Voice") {
+            let text = createElementWithClass("div", "message-row-text");
+            text.innerHTML = '<a href = "' + msg[i].url + '">*[语音]</a>';
+            div.appendChild(text);
+        }
+        if (msg[i].type == "At") {
+            console.log(msg[i].target);
+            let text = createElementWithClass("div", "message-row-text");
+            text.innerHTML = '<div style="color: dodgerblue;">@' + msg[i].target + '</div>';
+            div.appendChild(text);
+        }
+
     }
     row.appendChild(div);
     let content = document.getElementById("chat-content");
