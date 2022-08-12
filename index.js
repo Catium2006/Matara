@@ -37,6 +37,8 @@ class MessageNode {
 var flist;
 var glist;
 
+var isBotOnline = true;
+
 const { Bot, Message } = require('mirai-js');
 const bot = new Bot();
 async function login() {
@@ -111,7 +113,15 @@ async function login() {
     bot.getGroupList().then(function (data) {
         glist = data;
     });
-    console.log("登录完了")
+    bot.on('BotOnlineEvent', async data => {
+        console.log("已上线");
+        isBotOnline = true;
+    });
+    bot.on(['BotOfflineEventForce', 'BotOfflineEventDropped', "BotOfflineEventActive"], async data => {
+        console.log("已掉线");
+        isBotOnline = false;
+    });
+    console.log("登录成功");
 }
 
 const http = require("http");
@@ -222,7 +232,11 @@ function handleHttp(req, res) {
                 let status = {
                     memory: process.memoryUsage(),
                     arch: process.arch,
-                    platform: process.platform
+                    platform: process.platform,
+                    bot: {
+                        qq: bot.getQQ(),
+                        online: isBotOnline
+                    }
                 }
                 let str = JSON.stringify(status);
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');

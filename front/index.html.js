@@ -290,19 +290,34 @@ function update() {
     //然后更新Status
     getStatus().then(function (data) {
         data = JSON.parse(data);
+        // console.log(data);
         div = document.getElementById("status-content");
         div.replaceChildren();
         let meminfo = createElementWithClass("div", "status-row");
-        meminfo.innerText = "堆内存使用: " + ((data.memory.heapUsed / 1024 / 1024).toFixed(1)) + " / " + ((data.memory.heapTotal / 1024 / 1024).toFixed(1)) + "MB";
+        meminfo.innerText = "堆内存使用: " + ((data.memory.heapUsed / 1024 / 1024).toFixed(2)) + " / " + ((data.memory.heapTotal / 1024 / 1024).toFixed(2)) + "MB";
         div.appendChild(meminfo);
         let platform = createElementWithClass("div", "status-row");
         platform.innerText = "平台: " + data.platform + " " + data.arch;
         div.appendChild(platform);
+        let bot = createElementWithClass("div", "status-row");
+        bot.innerText = "Bot: " + data.bot.qq + " " + (data.bot.online == true ? "Online" : "Offline");
+        div.appendChild(bot);
     });
 }
 
 function app() {
     window.onkeydown = keyDown;
+
+    document.getElementById("myHeadimg").onclick = function () {
+        showStatus();
+    };
+    document.getElementById("myHeadimg").onmouseenter = function () {
+        document.getElementById("myHeadimg").style.filter = "opacity(30%)";
+    }
+    document.getElementById("myHeadimg").onmouseleave = function () {
+        document.getElementById("myHeadimg").style.filter = "";
+    }
+
 
     fetch("/api/getQQ").then(function (res) {
         res.text().then(function (data) {
