@@ -311,6 +311,10 @@ function update() {
         let bot = createElementWithClass("div", "status-row");
         bot.innerText = "Bot: " + data.bot.qq + " " + (data.bot.online == true ? "Online" : "Offline");
         div.appendChild(bot);
+        let mpm = createElementWithClass("div", "status-row");
+        mpm.innerText = "消息/分钟: " + data.bot.msgPerMinute;
+        div.appendChild(mpm);
+
     });
 }
 

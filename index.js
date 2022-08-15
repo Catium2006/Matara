@@ -53,6 +53,7 @@ async function login() {
     const profile = await bot.getUserProfile({ qq: bot.getQQ() });
     debug("登录信息 : " + JSON.stringify(profile));
     bot.on('GroupMessage', async data => {
+        _msg++;
         debug(data.sender.group.name + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let gid = sender.group.id;
@@ -80,6 +81,7 @@ async function login() {
         gmsgn.set(gid, array);
     });
     bot.on('FriendMessage', async data => {
+        _msg++;
         debug(data.sender.remark + " : " + JSON.stringify(data.messageChain));
         let sender = data.sender;
         let uid = sender.id;
@@ -123,6 +125,10 @@ async function login() {
     });
     console.log("登录成功");
 }
+
+var _sec = 0;
+var _msg = 0;
+var _last_msg = 0;
 
 const http = require("http");
 function handleHttp(req, res) {
@@ -235,7 +241,8 @@ function handleHttp(req, res) {
                     platform: process.platform,
                     bot: {
                         qq: bot.getQQ(),
-                        online: isBotOnline
+                        online: isBotOnline,
+                        msgPerMinute: _last_msg
                     }
                 }
                 let str = JSON.stringify(status);
@@ -299,6 +306,7 @@ function handleHttp(req, res) {
                 debug("POST data :" + post);
                 post = JSON.parse(post);
                 if (api == "sendFriendMessage") {
+                    _msg++;
                     let uid = new Number(post.id).valueOf();
                     let str = post.str;
                     let msg = new Message().addText(str).getMessageChain();
@@ -335,6 +343,7 @@ function handleHttp(req, res) {
                 }
 
                 if (api == "sendGroupMessage") {
+                    _msg++;
                     let gid = new Number(post.id).valueOf();
                     let str = post.str;
                     let msg = new Message().addText(str).getMessageChain();
@@ -396,6 +405,15 @@ async function app() {
     console.log("登录 QQ : " + setting.qq);
     login();
 
+    //注册定时器, 维护消息密度
+    setInterval(function () {
+        _sec++;
+        if (_sec >= 60) {
+            _sec = 0;
+            _last_msg = _msg;
+            _msg = 0;
+        }
+    }, 1000);
 }
 
 app();
