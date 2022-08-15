@@ -188,6 +188,9 @@ function handleHttp(req, res) {
                         let array = fmsg.get(id);
                         res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                         res.end(JSON.stringify(array));
+                        while(fmsgn.get(id).length > 0){
+                            fmsgn.get(id).shift();
+                        }
                     }
                 }
             }
@@ -200,6 +203,9 @@ function handleHttp(req, res) {
                         let array = gmsg.get(id);
                         res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                         res.end(JSON.stringify(array));
+                        while(gmsgn.get(id).length > 0){
+                            gmsgn.get(id).shift();
+                        }
                     }
                 }
             }
