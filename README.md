@@ -30,6 +30,7 @@
 
 ### 安装
 
+
 1. 确保安装好了 `node.js` 运行环境  
     如果没有, 请移步 [node.js 下载](https://nodejs.org/)
 2. 下载或者克隆仓库, 然后在仓库根目录安装依赖:  
@@ -40,6 +41,7 @@
    npm install path
    npm install mirai-js
    ```
+或者你也可以下载不定期打包, 附带依赖库的 [Release](https://github.com/Catium2006/Matara/releases) 解压后使用.  
 
 ### 配置
 
