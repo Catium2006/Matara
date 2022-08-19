@@ -42,13 +42,13 @@ var isBotOnline = true;
 const { Bot, Message } = require('mirai-js');
 const bot = new Bot();
 async function login() {
-    let url = "http://" + setting.host + ":" + setting.port
+    let url = "http://" + setting.mirai.host + ":" + setting.mirai.port
     debug("mirai-api-http目标 : " + url);
     await bot.open({
         baseUrl: url,
-        verifyKey: setting.verifyKey,
+        verifyKey: setting.mirai.verifyKey,
         // 要绑定的 qq，须确保该用户已在 mirai-console 登录
-        qq: setting.qq,
+        qq: setting.mirai.qq,
     });
     const profile = await bot.getUserProfile({ qq: bot.getQQ() });
     debug("登录信息 : " + JSON.stringify(profile));
@@ -187,6 +187,7 @@ var _last_msg = 0;
 
 const http = require("http");
 function handleHttp(req, res) {
+
     if (req.method == "GET") {
         debug('[GET] ' + req.url);
         if (req.url.startsWith("/api/")) {
@@ -440,7 +441,10 @@ function handleHttp(req, res) {
 
 function startHttpServer() {
     console.log('HTTP 服务运行在 http://localhost:' + setting.localServer.port + "/");
-    http.createServer(handleHttp).listen(setting.localServer.port);
+    http.createServer(function (req, res) {
+        debug(req.socket.remoteAddress);
+        handleHttp(req, res);
+    }).listen(setting.localServer.port);
 }
 
 async function app() {

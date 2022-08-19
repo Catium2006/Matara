@@ -47,33 +47,23 @@
 
 给出一个模板:
 ```yaml
-## 注意, 这部分配置文件仅用于连接
-## 部分设置与mirai-api-http后端同名配置文件对应项目相同才能连接
-
 ## 自行配置好你的 mirai 与 mirai-api-http
 ## 确保 http://<mirai-api-http所在机器>:<端口>/about 是可访问的
-
+mirai:
 ## mirai-api-http的凭据
-verifyKey: examplekey
-
+  verifyKey: examplekey
 ## mirai-api-http的主机
-## host字段可以不是ip, 可以使用域名
-## host字段可以不与mirai-api-http一致
-host: www.example.com
-
+  host: www.example.com
 ## mirai-api-http的端口
-## 非局域网访问需要开启mirai-api-http所在机器对应端口转发
-port: 8080
-
+  port: 8080
 ## 要登录的QQ号
-qq: 1145141919
+  qq: 1145141919
 
 localServer:
 ## 前端开放端口,建议写8000-12000
   port: 8888
 ## 是否开启调试(控制台输出多)
   debug: false
-
 ## 缓存大小(消息条数/会话)
 ## 太大的缓存可能导致页面卡顿和nodejs内存占用高
 ## 建议不超过512
