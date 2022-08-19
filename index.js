@@ -43,7 +43,7 @@ const { Bot, Message } = require('mirai-js');
 const bot = new Bot();
 async function login() {
     let url = "http://" + setting.mirai.host + ":" + setting.mirai.port
-    debug("mirai-api-http目标 : " + url);
+    console.log("mirai-api-http目标 : " + url);
     await bot.open({
         baseUrl: url,
         verifyKey: setting.mirai.verifyKey,
@@ -51,7 +51,7 @@ async function login() {
         qq: setting.mirai.qq,
     });
     const profile = await bot.getUserProfile({ qq: bot.getQQ() });
-    debug("登录信息 : " + JSON.stringify(profile));
+    console.log("登录信息 : " + JSON.stringify(profile));
     bot.on('GroupMessage', async data => {
         _msg++;
         debug(data.sender.group.name + " : " + JSON.stringify(data.messageChain));
@@ -122,7 +122,15 @@ async function login() {
         console.log("已掉线");
         isBotOnline = false;
     });
-
+    bot.on('close', async err => {
+        console.log("WebSocket Error : " + err.reason);
+        isBotOnline = false;
+        // exit(0);  
+        console.log("将会在 10 秒后尝试上线");
+        setTimeout(function () {
+            login();
+        }, 10000);
+    })
     bot.on("FriendRecallEvent", async data => {
         let msgn = new MessageNode();
         let uid = data.operator;
@@ -186,6 +194,34 @@ var _msg = 0;
 var _last_msg = 0;
 
 const http = require("http");
+const { exit } = require("process");
+
+function HttpErrorCode(res, code) {
+    let filename = './front/errors/' + code + '.html';
+    fs.readFile(filename, function (err, data) {
+        if (err) {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'text/plain;charset=utf-8');
+            res.end('文件系统错误: ' + err.message);
+            debug(err.message);
+        } else {
+            res.statusCode = code;
+            res.end(data);
+        }
+    });
+}
+
+function HttpSendFile(res, filename) {
+    fs.readFile(filename, function (err, data) {
+        if (err) {
+            HttpErrorCode(res, 404);
+        } else {
+            res.statusCode = 200;
+            res.end(data);
+        }
+    });
+}
+
 function handleHttp(req, res) {
 
     if (req.method == "GET") {
@@ -198,8 +234,8 @@ function handleHttp(req, res) {
                 if (api.length >= 3) {
                     let id = api[2];
                     if (typeof (id) == "number") {
+                        res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                         bot.getUserProfile({ qq: id }).then(function (data) {
-                            res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                             res.end(JSON.stringify(data));
                         });
                     }
@@ -301,40 +337,14 @@ function handleHttp(req, res) {
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end(str);
             }
-            setTimeout(() => {
-                if (!res.writableEnded) {
-                    res.statusCode = 200;
-                    res.end("bad");
-                }
-            }, 2000);
+            
         } else if (req.url == "/") {
             //发送主页面
-            fs.readFile('./front/index.html', function (err, data) {
-                if (err) {
-                    res.statusCode = 500;
-                    res.setHeader('Content-Type', 'text/plain;charset=utf-8');
-                    res.end('文件系统错误: ' + err.message);
-                    debug(err.message);
-                } else {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'text/html;charset=utf-8');
-                    res.end(data);
-                }
-            });
+            HttpSendFile(res, "./front/index.html");
         } else {
             //其他资源文件
             let filename = './front' + req.url;
-            fs.readFile(filename, function (err, data) {
-                if (err) {
-                    res.statusCode = 500;
-                    res.setHeader('Content-Type', 'text/plain;charset=utf-8');
-                    res.end('文件系统错误: ' + err.message);
-                    debug(err.message);
-                } else {
-                    res.statusCode = 200;
-                    res.end(data);
-                }
-            })
+            HttpSendFile(res, filename);
         }
     }
 
@@ -430,32 +440,36 @@ function handleHttp(req, res) {
                 }
             });
         }
-        setTimeout(() => {
-            if (!res.writableEnded) {
-                res.statusCode = 200;
-                res.end("bad");
-            }
-        }, 2000);
+        
     }
+    setTimeout(() => {
+        if (!res.writableEnded) {
+            HttpErrorCode(res, 400);
+        }
+    }, 2000);
 }
 
 function startHttpServer() {
     console.log('HTTP 服务运行在 http://localhost:' + setting.localServer.port + "/");
     http.createServer(function (req, res) {
-        debug(req.socket.remoteAddress);
-        handleHttp(req, res);
+        // debug(req.socket.remoteAddress);
+        if (setting.localServer.allow.includes(req.socket.remoteAddress)) {
+            handleHttp(req, res);
+        } else {
+            HttpErrorCode(res, 403);
+        }
     }).listen(setting.localServer.port);
 }
 
 async function app() {
     console.log("使用配置 setting.yml");
 
-    debug("缓存大小 : " + setting.localServer.cacheSize);
+    console.log("缓存大小 : " + setting.localServer.cacheSize);
 
-    debug("启动 HTTP");
+    console.log("启动 HTTP");
     startHttpServer();
 
-    console.log("登录 QQ : " + setting.qq);
+    console.log("登录 QQ : " + setting.mirai.qq);
     login();
 
     //注册定时器, 维护消息密度
