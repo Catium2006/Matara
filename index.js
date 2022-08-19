@@ -89,7 +89,6 @@ async function login() {
         let msgn = new MessageNode();
         msgn.sender = sender;
         msgn.messageChain = data.messageChain;
-
         let array = new Array();
         if (fmsg.has(uid)) {
             array = fmsg.get(uid);
@@ -99,7 +98,6 @@ async function login() {
             array.shift();
         }
         fmsg.set(uid, array);
-
         array = new Array();
         if (fmsgn.has(uid)) {
             array = fmsgn.get(uid);
@@ -125,10 +123,12 @@ async function login() {
         isBotOnline = false;
     });
 
-
     bot.on("FriendRecallEvent", async data => {
         let msgn = new MessageNode();
-        msgn.sender = data.operator;
+        let uid = data.operator;
+        msgn.sender = {
+            id: uid
+        };
         let msg = new Message().addText("[撤回了一条消息]").getMessageChain();
         msgn.messageChain = [msg];
         let array = new Array();
@@ -193,7 +193,6 @@ function handleHttp(req, res) {
             //处理前端接口请求
             let api = req.url.substring(1).split("/");
             debug("API : " + api);
-
             if (api[1] == "getUserProfile") {
                 if (api.length >= 3) {
                     let id = api[2];
@@ -205,7 +204,6 @@ function handleHttp(req, res) {
                     }
                 }
             }
-
             if (api[1] == "getGroupConfig") {
                 if (api.length >= 3) {
                     let id = api[2];
@@ -217,24 +215,20 @@ function handleHttp(req, res) {
                     }
                 }
             }
-
             if (api[1] == "getFriendList") {
                 // debug("好友列表")
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end(JSON.stringify(flist));
             }
-
             if (api[1] == "getGroupList") {
                 // debug("群列表");
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end(JSON.stringify(glist));
             }
-
             if (api[1] == "getQQ") {
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end("" + bot.getQQ());
             }
-
             if (api[1] == "getFriendMessageList") {
                 // debug("好友消息列表");
                 if (api.length >= 3) {
@@ -263,7 +257,6 @@ function handleHttp(req, res) {
                     }
                 }
             }
-
             if (api[1] == "getFriendMessageListNew") {
                 // debug("好友消息增量列表");
                 if (api.length >= 3) {
@@ -278,7 +271,6 @@ function handleHttp(req, res) {
                     }
                 }
             }
-
             if (api[1] == "getGroupMessageListNew") {
                 // debug("群消息增量列表");
                 if (api.length >= 3) {
@@ -293,7 +285,6 @@ function handleHttp(req, res) {
                     }
                 }
             }
-
             if (api[1] == "status") {
                 let status = {
                     memory: process.memoryUsage(),
@@ -309,14 +300,12 @@ function handleHttp(req, res) {
                 res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                 res.end(str);
             }
-
             setTimeout(() => {
                 if (!res.writableEnded) {
                     res.statusCode = 200;
                     res.end("bad");
                 }
             }, 2000);
-
         } else if (req.url == "/") {
             //发送主页面
             fs.readFile('./front/index.html', function (err, data) {
@@ -330,7 +319,7 @@ function handleHttp(req, res) {
                     res.setHeader('Content-Type', 'text/html;charset=utf-8');
                     res.end(data);
                 }
-            })
+            });
         } else {
             //其他资源文件
             let filename = './front' + req.url;
