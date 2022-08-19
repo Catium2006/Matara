@@ -63,6 +63,11 @@ function addMessage(msg, qq) {
         if (msg[i].type == "Image") {
             let img = createElementWithClass("img", "chatimg");
             img.src = msg[i].url;
+            div.appendChild(img);            
+        }
+        if (msg[i].type == "FlashImage") {
+            let img = createElementWithClass("img", "chatimg");
+            img.src = msg[i].url;
             div.appendChild(img);
         }
         if (msg[i].type == "File") {
@@ -76,7 +81,7 @@ function addMessage(msg, qq) {
             div.appendChild(text);
         }
         if (msg[i].type == "Quote") {
-            let origintext = ' *回复 => "' + msg[i].origin[0].text + '" ';
+            let origintext = ' [回复] => "' + msg[i].origin[0].text + '" ';
             let text = createElementWithClass("div", "message-row-text");
             let quote = createElementWithClass("div", "quote");
             quote.innerHTML = origintext;
@@ -85,13 +90,22 @@ function addMessage(msg, qq) {
         }
         if (msg[i].type == "Voice") {
             let text = createElementWithClass("div", "message-row-text");
-            text.innerHTML = '<a href = "' + msg[i].url + '">*[语音]</a>';
+            text.innerHTML = '<a style="color: dodgerblue; href = "' + msg[i].url + '">[语音]</a>';
             div.appendChild(text);
         }
         if (msg[i].type == "At") {
-            console.log(msg[i].target);
             let text = createElementWithClass("div", "message-row-text");
             text.innerHTML = '<div style="color: dodgerblue;">@' + msg[i].target + '</div>';
+            div.appendChild(text);
+        }
+        if (msg[i].type == "AtAll") {
+            let text = createElementWithClass("div", "message-row-text");
+            text.innerHTML = '<div style="color: dodgerblue;">@全体成员</div>';
+            div.appendChild(text);
+        }
+        if (msg[i].type == "Xml") {
+            let text = createElementWithClass("div", "message-row-text");
+            text.innerHTML = '<div>[Xml消息]</div><div>' + msg[i].Xml + '</div>';
             div.appendChild(text);
         }
 

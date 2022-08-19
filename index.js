@@ -129,7 +129,7 @@ async function login() {
         msgn.sender = {
             id: uid
         };
-        let msg = new Message().addText("[撤回了一条消息]").getMessageChain();
+        let msg = new Message().addPlain("[撤回了一条消息]").getMessageChain();
         msgn.messageChain = [msg];
         let array = new Array();
         if (fmsg.has(uid)) {
@@ -156,7 +156,7 @@ async function login() {
         let gid = data.group.id;
         let msgn = new MessageNode();
         msgn.sender = sender;
-        let msg = new Message().addText("[撤回了一条消息]").getMessageChain();
+        let msg = new Message().addPlain("[撤回了一条消息]").getMessageChain();
         msgn.messageChain = [msg];
         let array = new Array();
         if (gmsg.has(gid)) {
