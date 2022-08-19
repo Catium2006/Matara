@@ -80,6 +80,7 @@ async function login() {
         }
         gmsgn.set(gid, array);
     });
+
     bot.on('FriendMessage', async data => {
         _msg++;
         debug(data.sender.remark + " : " + JSON.stringify(data.messageChain));
@@ -123,6 +124,60 @@ async function login() {
         console.log("已掉线");
         isBotOnline = false;
     });
+
+
+    bot.on("FriendRecallEvent", async data => {
+        let msgn = new MessageNode();
+        msgn.sender = data.operator;
+        let msg = new Message().addText("[撤回了一条消息]").getMessageChain();
+        msgn.messageChain = [msg];
+        let array = new Array();
+        if (fmsg.has(uid)) {
+            array = fmsg.get(uid);
+        }
+        array.push(msgn);
+        while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+            array.shift();
+        }
+        fmsg.set(uid, array);
+        array = new Array();
+        if (fmsgn.has(uid)) {
+            array = fmsgn.get(uid);
+        }
+        array.push(msgn);
+        while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+            array.shift();
+        }
+        fmsgn.set(uid, array);
+    });
+
+    bot.on("GroupRecallEvent", async data => {
+        let sender = data.operator;
+        let gid = data.group.id;
+        let msgn = new MessageNode();
+        msgn.sender = sender;
+        let msg = new Message().addText("[撤回了一条消息]").getMessageChain();
+        msgn.messageChain = [msg];
+        let array = new Array();
+        if (gmsg.has(gid)) {
+            array = gmsg.get(gid);
+        }
+        array.push(msgn);
+        while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+            array.shift();
+        }
+        gmsg.set(gid, array);
+        array = new Array();
+        if (gmsgn.has(gid)) {
+            array = gmsgn.get(gid);
+        }
+        array.push(msgn);
+        while (array.length > Number(setting.localServer.cacheSize).valueOf()) {
+            array.shift();
+        }
+        gmsgn.set(gid, array);
+    });
+
     console.log("登录成功");
 }
 
@@ -188,13 +243,12 @@ function handleHttp(req, res) {
                         let array = fmsg.get(id);
                         res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                         res.end(JSON.stringify(array));
-                        while(fmsgn.get(id).length > 0){
+                        while (fmsgn.get(id).length > 0) {
                             fmsgn.get(id).shift();
                         }
                     }
                 }
             }
-
             if (api[1] == "getGroupMessageList") {
                 // debug("群消息列表");
                 if (api.length >= 3) {
@@ -203,7 +257,7 @@ function handleHttp(req, res) {
                         let array = gmsg.get(id);
                         res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                         res.end(JSON.stringify(array));
-                        while(gmsgn.get(id).length > 0){
+                        while (gmsgn.get(id).length > 0) {
                             gmsgn.get(id).shift();
                         }
                     }
