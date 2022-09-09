@@ -194,10 +194,9 @@ var _msg = 0;
 var _last_msg = 0;
 
 const http = require("http");
-const { exit } = require("process");
 
 function HttpErrorCode(res, code) {
-    let filename = './front/errors/' + code + '.html';
+    let filename = './front/errors/' + code;
     fs.readFile(filename, function (err, data) {
         if (err) {
             res.statusCode = 500;
@@ -434,7 +433,7 @@ function handleHttp(req, res) {
                         array.shift();
                     }
                     gmsgn.set(gid, array);
-                    console.log("群 => " + gid + " : " + str);
+                    console.log("群 -> " + gid + " : " + str);
                     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
                     res.end("ok");
                 }
