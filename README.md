@@ -2,6 +2,8 @@
 
 `node.js`实现,运行于浏览器的轻量级QQ前端.  
 
+*upd: 2022/9/18 本人QQ大号被封号 ~~常在河边走哪有不湿鞋~~*
+
 底层协议为QQ机器人框架 [mirai](https://github.com/mamoe/mirai) , 语言相关API是基于 [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 实现的 [mirai-js](https://github.com/Drincann/Mirai-js)
 
 名字来源于东方Project中的秘神摩多罗
